@@ -18,18 +18,3 @@ class UpdateHandler(Processor):
     
     def forward_message_to_admins(self, msg: Message) -> NewMessage:
         pass
-
-
-class ObjectSender(Processor):
-    def __init__(self) -> None:
-        self.senders = {
-            NewMessage: send_message,
-            NewPoll: send_poll,
-            NewCallbackAnswer: answer_callback_query,
-        }
-
-    def __call__(self, event: NewObject) -> None:
-        logger.info(f'Send new event: {type(event), event.dict()}')
-        eventType = type(event)
-        eventSender = self.senders[eventType]
-        is_done = eventSender(**event.dict(exclude_none=True))
