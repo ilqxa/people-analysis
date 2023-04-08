@@ -1,13 +1,13 @@
 from blocks.app import App
 
 from src.sources import LongPoolReader
-from src.processors import UpdateParser, ObjectSender
+from src.processors import UpdateHandler, ObjectSender
 
 if __name__ == '__main__':
     blocks = [
         LongPoolReader(),
-        UpdateParser(),
+        UpdateHandler(),
         ObjectSender(),
     ]
 
-    App(blocks).run(once=True)
+    App(blocks=blocks).run(once=True)   #type: ignore
