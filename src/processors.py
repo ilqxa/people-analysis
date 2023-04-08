@@ -11,7 +11,7 @@ class UpdateParser(Processor):
     def __init__(self) -> None:
         ...
 
-    def __call__(self, event: Update) -> NewMessage | NewPoll | None:
+    def __call__(self, event: Update) -> NewObject | None:
         logger.info(f'New update for parsing: {event.dict()}')
         
         if event.message and event.message.text == '1':
@@ -29,7 +29,7 @@ class ObjectSender(Processor):
             NewPoll: send_poll,
         }
 
-    def __call__(self, event: NewMessage | NewPoll) -> None:
+    def __call__(self, event: NewObject) -> None:
         logger.info(f'Send new event: {type(event), event.dict()}')
         eventType = type(event)
         eventSender = self.senders[eventType]
