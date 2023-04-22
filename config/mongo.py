@@ -1,17 +1,18 @@
-from pydantic import BaseModel, Field, MongoDsn
+from pydantic import BaseSettings, Field, MongoDsn
 
 
-class MongoConf(BaseModel):
+class MongoConf(BaseSettings):
     host: str = Field(env='MONGO_HOST')
     port: int = Field(env='MONGO_PORT', default=27017)
-    user: str | None = Field(env='MONGO_USER', default=None)
-    pswd: str | None = Field(env='MONGO_PASS', default=None)
+    base: str = Field(env='MONGO_BASE')
+    user: str | None = Field(env='MONGO_USER')
+    pswd: str | None = Field(env='MONGO_PASS')
 
     @property
-    def connection_string(self) -> MongoDsn:
-        return MongoDsn(
-            host = self.host,
-            port = self.port,
-            user = self.user,
-            password = self.pswd,
-        )
+    def connection_string(self) -> str:
+        if self.user and self.pswd:
+            return f'mongodb://{self.user}:{self.pswd}@{self.host}:{self.port}'
+        elif self.user:
+            return f'mongodb://{self.user}@{self.host}:{self.port}'
+        else:
+            return f'mongodb://{self.host}:{self.port}'
